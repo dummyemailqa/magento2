@@ -1,0 +1,29 @@
+name: trivy-cve
+on:
+  push: {}
+  pull_request: {}
+  workflow_dispatch: {}
+jobs:
+  scan:
+    name: Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Run Trivy vulnerability scanner 
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          scan-type: 'repo'          
+          scanners: 'vuln'
+          format: 'sarif'
+          output: 'trivy-cve-results.sarif'
+          hide-progress: true
+      - name: Upload Trivy artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-cve-results.sarif
+          path: trivy-cve-results.sarif
+
+          
